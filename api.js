@@ -54,7 +54,7 @@ router.get('/checkUsdc/reserve/SUSHISWAP',async(req,res) => {
 
 router.post("/checkUsdc/UNISWAP", async (req, res) => {
   let response = {};
-  response.data = [];
+  response.data = '';
   let statusCode = 200;
 
   let token0 = req.body.token0;
@@ -191,7 +191,7 @@ router.post("/checkUsdc/UNISWAP", async (req, res) => {
           response.shuffle = 1;
           response.status = "SUCCESS";
         } else {
-          response.data = [];
+          response.data = '';
           response.shuffle = 0;
           response.status = "SUCCESS";
         }
@@ -211,7 +211,7 @@ router.post("/checkUsdc/UNISWAP", async (req, res) => {
 
 router.post('/checkUsdc/SUSHISWAP',async(req,res) => {
   let response = {}
-  response.data = []
+  response.data = ''
   let statusCode = 200
 
   let token0 =  req.body.token0;
@@ -352,7 +352,7 @@ router.post('/checkUsdc/SUSHISWAP',async(req,res) => {
             response.shuffle = 1;
             response.status = "SUCCESS";
           } else {
-            response.data = [];
+            response.data = '';
             response.shuffle = 0;
             response.status = "SUCCESS";
           }
