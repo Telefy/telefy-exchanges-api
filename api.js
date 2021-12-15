@@ -10,7 +10,7 @@ const UniswapV2Pair = require("./abi/IUniswapV2Pair.json");
 require("dotenv").config({});
 const Web3 = require("web3");
 const Provider = require('@truffle/hdwallet-provider');
-const provider = new Provider(process.env.WALLET_PRIVATE_KEY, process.env.HTTP_URL); 
+const provider = new Provider("89ffe7016912c892dbd513c83099b4cde7f2e3fd2f07b469241ccd078dea90ab", "https://mainnet.infura.io/v3/01ec171f81164847811fed95c4c236ff"); 
 const web3http = new Web3(provider);
 
 
@@ -89,10 +89,35 @@ router.post("/checkUsdc/UNISWAP", async (req, res) => {
       }
     );
     if (result.data.data.pairs.length > 0) {
-      let resevers = await getReserves(result.data.data.pairs[0].id);
-      if (resevers.length > 0) {
-        result.data.data.pairs[0].reserve0 = resevers[0];
-        result.data.data.pairs[0].reserve1 = resevers[1];
+      let reserve0 = result.data.data.pairs[0].reserve0.split(".");     
+      let reserve1 = result.data.data.pairs[0].reserve1.split(".");
+      if (
+        parseInt(reserve0[1].length) !==
+        parseInt(result.data.data.pairs[0].token0.decimals)
+      ) {
+        
+
+        for (var i = reserve0[1].length; i < parseInt(result.data.data.pairs[0].token0.decimals); i++) {
+          reserve0[1] += "0";
+        }
+        result.data.data.pairs[0].reserve0 = reserve0[0]+reserve0[1];
+        
+      } else {
+        result.data.data.pairs[0].reserve0 = result.data.data.pairs[0].reserve0.replace(".", "");
+      }
+      if (
+        parseInt(reserve1[1].length) !==
+        parseInt(result.data.data.pairs[0].token1.decimals)
+      ) {
+        
+
+        for (var i = reserve1[1].length; i < parseInt(result.data.data.pairs[0].token1.decimals)+2; i++) {
+          reserve1[1] += "0";
+        }
+        result.data.data.pairs[0].reserve1 = reserve1[0]+reserve1[1];
+        
+      }  else {
+        result.data.data.pairs[0].reserve1 = result.data.data.pairs[0].reserve1.replace(".", "");
       }
       response.data = result.data.data;
       response.shuffle = 0;
@@ -128,10 +153,39 @@ router.post("/checkUsdc/UNISWAP", async (req, res) => {
           }
         );
         if (result.data.data.pairs.length > 0) {
-          let resevers = await getReserves(result.data.data.pairs[0].id);
-          if (resevers.length > 0) {
-            result.data.data.pairs[0].reserve0 = resevers[0];
-            result.data.data.pairs[0].reserve1 = resevers[1];
+          let reserve0 = result.data.data.pairs[0].reserve0.split(".");
+          let reserve1 = result.data.data.pairs[0].reserve1.split(".");
+          if (
+            parseInt(reserve0[1].length) !==
+            parseInt(result.data.data.pairs[0].token0.decimals)
+          ) {
+            for (
+              var i = reserve0[1].length;
+              i < parseInt(result.data.data.pairs[0].token0.decimals);
+              i++
+            ) {
+              reserve0[1] += "0";
+            }
+            result.data.data.pairs[0].reserve0 = reserve0[0] + reserve0[1];
+          } else {
+            result.data.data.pairs[0].reserve0 =
+              result.data.data.pairs[0].reserve0.replace(".", "");
+          }
+          if (
+            parseInt(reserve1[1].length) !==
+            parseInt(result.data.data.pairs[0].token1.decimals)
+          ) {
+            for (
+              var i = reserve1[1].length;
+              i < parseInt(result.data.data.pairs[0].token1.decimals) + 2;
+              i++
+            ) {
+              reserve1[1] += "0";
+            }
+            result.data.data.pairs[0].reserve1 = reserve1[0] + reserve1[1];
+          } else {
+            result.data.data.pairs[0].reserve1 =
+              result.data.data.pairs[0].reserve1.replace(".", "");
           }
           response.data = result.data.data;
           response.shuffle = 1;
@@ -191,18 +245,46 @@ router.post('/checkUsdc/SUSHISWAP',async(req,res) => {
         `,
         }
       );
-      if(result.data.data.pairs.length > 0) {
-        let resevers = await getReserves(result.data.data.pairs[0].id);
-        if(resevers.length > 0) {
-
-         result.data.data.pairs[0].reserve0 = resevers[0]; 
-         result.data.data.pairs[0].reserve1 = resevers[1];
-       }
-        response.data = result.data.data
+      if (result.data.data.pairs.length > 0) {
+        let reserve0 = result.data.data.pairs[0].reserve0.split(".");
+        let reserve1 = result.data.data.pairs[0].reserve1.split(".");
+        if (
+          parseInt(reserve0[1].length) !==
+          parseInt(result.data.data.pairs[0].token0.decimals)
+        ) {
+          for (
+            var i = reserve0[1].length;
+            i < parseInt(result.data.data.pairs[0].token0.decimals);
+            i++
+          ) {
+            reserve0[1] += "0";
+          }
+          result.data.data.pairs[0].reserve0 = reserve0[0] + reserve0[1];
+        } else {
+          result.data.data.pairs[0].reserve0 =
+            result.data.data.pairs[0].reserve0.replace(".", "");
+        }
+        if (
+          parseInt(reserve1[1].length) !==
+          parseInt(result.data.data.pairs[0].token1.decimals)
+        ) {
+          for (
+            var i = reserve1[1].length;
+            i < parseInt(result.data.data.pairs[0].token1.decimals) + 2;
+            i++
+          ) {
+            reserve1[1] += "0";
+          }
+          result.data.data.pairs[0].reserve1 = reserve1[0] + reserve1[1];
+        } else {
+          result.data.data.pairs[0].reserve1 =
+            result.data.data.pairs[0].reserve1.replace(".", "");
+        }
+        response.data = result.data.data;
         response.shuffle = 0;
         response.status = "SUCCESS";
       } else {
-        try {    
+        try {
           let result = await axios.post(
             "https://api.thegraph.com/subgraphs/name/sushiswap/exchange",
             {
@@ -230,25 +312,53 @@ router.post('/checkUsdc/SUSHISWAP',async(req,res) => {
               }
             `,
             }
-          );       
-          if(result.data.data.pairs.length > 0) {
-            let resevers = await getReserves(result.data.data.pairs[0].id);
-            if(resevers.length > 0) {
-    
-             result.data.data.pairs[0].reserve0 = resevers[0]; 
-             result.data.data.pairs[0].reserve1 = resevers[1];
-           }
-            response.data = result.data.data
+          );
+          if (result.data.data.pairs.length > 0) {
+            let reserve0 = result.data.data.pairs[0].reserve0.split(".");
+            let reserve1 = result.data.data.pairs[0].reserve1.split(".");
+            if (
+              parseInt(reserve0[1].length) !==
+              parseInt(result.data.data.pairs[0].token0.decimals)
+            ) {
+              for (
+                var i = reserve0[1].length;
+                i < parseInt(result.data.data.pairs[0].token0.decimals);
+                i++
+              ) {
+                reserve0[1] += "0";
+              }
+              result.data.data.pairs[0].reserve0 = reserve0[0] + reserve0[1];
+            } else {
+              result.data.data.pairs[0].reserve0 =
+                result.data.data.pairs[0].reserve0.replace(".", "");
+            }
+            if (
+              parseInt(reserve1[1].length) !==
+              parseInt(result.data.data.pairs[0].token1.decimals)
+            ) {
+              for (
+                var i = reserve1[1].length;
+                i < parseInt(result.data.data.pairs[0].token1.decimals) + 2;
+                i++
+              ) {
+                reserve1[1] += "0";
+              }
+              result.data.data.pairs[0].reserve1 = reserve1[0] + reserve1[1];
+            } else {
+              result.data.data.pairs[0].reserve1 =
+                result.data.data.pairs[0].reserve1.replace(".", "");
+            }
+            response.data = result.data.data;
             response.shuffle = 1;
             response.status = "SUCCESS";
           } else {
-            response.data = []
+            response.data = [];
             response.shuffle = 0;
             response.status = "SUCCESS";
           }
         } catch (error) {
-          console.error(error,"=---sushiswap error");
-          response.status = "FAILURE"
+          console.error(error, "=---sushiswap error");
+          response.status = "FAILURE";
           response.data = error;
         }
       }
@@ -300,12 +410,36 @@ router.get('/UNISWAP/pair',async(req,res) => {
           }
         );       
         
-          let resevers = await getReserves(result.data.data.pair.id);
-          if(resevers.length > 0) {
+        let reserve0 = result.data.data.pair.reserve0.split(".");     
+        let reserve1 = result.data.data.pair.reserve1.split(".");
+        if (
+          parseInt(reserve0[1].length) !==
+          parseInt(result.data.data.pair.token0.decimals)
+        ) {
+          
   
-           result.data.data.pair.reserve0 = resevers[0]; 
-           result.data.data.pair.reserve1 = resevers[1];
-         }
+          for (var i = reserve0[1].length; i < parseInt(result.data.data.pair.token0.decimals); i++) {
+            reserve0[1] += "0";
+          }
+          result.data.data.pair.reserve0 = reserve0[0]+reserve0[1];
+          
+        } else {
+          result.data.data.pair.reserve0 = result.data.data.pair.reserve0.replace(".", "");
+        }
+        if (
+          parseInt(reserve1[1].length) !==
+          parseInt(result.data.data.pair.token1.decimals)
+        ) {
+          
+  
+          for (var i = reserve1[1].length; i < parseInt(result.data.data.pair.token1.decimals)+2; i++) {
+            reserve1[1] += "0";
+          }
+          result.data.data.pair.reserve1 = reserve1[0]+reserve1[1];
+          
+        }  else {
+          result.data.data.pair.reserve1 = result.data.data.pair.reserve1.replace(".", "");
+        }
           response.data = result.data.data;
           response.status = "SUCCESS";
         
