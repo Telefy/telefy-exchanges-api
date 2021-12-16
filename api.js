@@ -373,7 +373,7 @@ router.post('/checkUsdc/SUSHISWAP',async(req,res) => {
       // GET PAIR DETAILS //
 
 router.get('/UNISWAP/pair',async(req,res) => {
-    console.log(req.query,"---ujh")
+    // console.log(req.query,"---ujh")
     let response = {}
     response.data = []
     let statusCode = 200
