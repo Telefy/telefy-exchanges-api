@@ -8,10 +8,10 @@ var bodyParser = require('body-parser');
 
 const UniswapV2Pair = require("./abi/IUniswapV2Pair.json");
 require("dotenv").config({});
-const Web3 = require("web3");
-const Provider = require('@truffle/hdwallet-provider');
-const provider = new Provider("89ffe7016912c892dbd513c83099b4cde7f2e3fd2f07b469241ccd078dea90ab", "https://mainnet.infura.io/v3/01ec171f81164847811fed95c4c236ff"); 
-const web3http = new Web3(provider);
+// const Web3 = require("web3");
+// const Provider = require('@truffle/hdwallet-provider');
+// const provider = new Provider("89ffe7016912c892dbd513c83099b4cde7f2e3fd2f07b469241ccd078dea90ab", "https://mainnet.infura.io/v3/01ec171f81164847811fed95c4c236ff"); 
+// const web3http = new Web3(provider);
 
 
 /// --- GET A UNISWAP WETH-USDC RESEVER PIRCE -- ///
@@ -22,7 +22,7 @@ router.get('/checkUsdc/reserve/UNISWAP',async(req,res) => {
   let statusCode = 200
 
   const PAIR_ADDR = "0xb4e16d0168e52d35cacd2c6185b44281ec28c9dc";
-  const resevers = await getReserves(PAIR_ADDR);
+  // const resevers = await getReserves(PAIR_ADDR);
   if(resevers.length > 0) {
 
     response.data = [{reserve0: resevers[0],reserve1: resevers[1]}] 
@@ -39,7 +39,7 @@ router.get('/checkUsdc/reserve/SUSHISWAP',async(req,res) => {
   let statusCode = 200
 
   const PAIR_ADDR = "0x397ff1542f962076d0bfe58ea045ffa2d347aca0";
-  const resevers = await getReserves(PAIR_ADDR);
+  // const resevers = await getReserves(PAIR_ADDR);
   if(resevers.length > 0) {
 
     response.data = [{reserve0: resevers[0],reserve1: resevers[1]}] 
@@ -459,12 +459,40 @@ router.get('/SUSHISWAP/pair',async(req,res) => {
           `,
           }
         );
-        let resevers = await getReserves(result.data.data.pair.id);
-          if(resevers.length > 0) {
-  
-           result.data.data.pair.reserve0 = resevers[0]; 
-           result.data.data.pair.reserve1 = resevers[1];
-         }
+        let reserve0 = result.data.data.pair.reserve0.split(".");
+        let reserve1 = result.data.data.pair.reserve1.split(".");
+        if (
+          parseInt(reserve0[1].length) !==
+          parseInt(result.data.data.pair.token0.decimals)
+        ) {
+          for (
+            var i = reserve0[1].length;
+            i < parseInt(result.data.data.pair.token0.decimals);
+            i++
+          ) {
+            reserve0[1] += "0";
+          }
+          result.data.data.pair.reserve0 = reserve0[0] + reserve0[1];
+        } else {
+          result.data.data.pair.reserve0 =
+            result.data.data.pair.reserve0.replace(".", "");
+        }
+        if (
+          parseInt(reserve1[1].length) !==
+          parseInt(result.data.data.pair.token1.decimals)
+        ) {
+          for (
+            var i = reserve1[1].length;
+            i < parseInt(result.data.data.pair.token1.decimals);
+            i++
+          ) {
+            reserve1[1] += "0";
+          }
+          result.data.data.pair.reserve1 = reserve1[0] + reserve1[1];
+        } else {
+          result.data.data.pair.reserve1 =
+            result.data.data.pair.reserve1.replace(".", "");
+        }
 
         response.data = result.data.data
         response.status = "SUCCESS";
@@ -499,25 +527,25 @@ router.post('/checkPair',async(req,res) => {
 });
 
 
-const getReserves = async (pairId) => {
-  const PAIR_ADDR = pairId.toString();
+// const getReserves = async (pairId) => {
+//   const PAIR_ADDR = pairId.toString();
 
-  const PairContractHTTP = new web3http.eth.Contract(
-    UniswapV2Pair.abi,
-    PAIR_ADDR
-  );
-  return new Promise(async (relsove,rejects) => {
+//   const PairContractHTTP = new web3http.eth.Contract(
+//     UniswapV2Pair.abi,
+//     PAIR_ADDR
+//   );
+//   return new Promise(async (relsove,rejects) => {
 
-    const _reserves = await PairContractHTTP.methods.getReserves().call();
+//     const _reserves = await PairContractHTTP.methods.getReserves().call();
 
-    if(_reserves){
-      relsove([_reserves.reserve0,_reserves.reserve1])
-    } else {
-      resolve([])
-    }
-  })
+//     if(_reserves){
+//       relsove([_reserves.reserve0,_reserves.reserve1])
+//     } else {
+//       resolve([])
+//     }
+//   })
 
-}
+// }
 
 
 const checkUniswapPair = async (wheres) => {
