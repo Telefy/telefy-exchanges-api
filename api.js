@@ -110,7 +110,7 @@ router.post("/checkUsdc/UNISWAP", async (req, res) => {
       ) {
         
 
-        for (var i = reserve1[1].length; i < parseInt(result.data.data.pairs[0].token1.decimals)+2; i++) {
+        for (var i = reserve1[1].length; i < parseInt(result.data.data.pairs[0].token1.decimals); i++) {
           reserve1[1] += "0";
         }
         result.data.data.pairs[0].reserve1 = reserve1[0]+reserve1[1];
@@ -175,7 +175,7 @@ router.post("/checkUsdc/UNISWAP", async (req, res) => {
           ) {
             for (
               var i = reserve1[1].length;
-              i < parseInt(result.data.data.pairs[0].token1.decimals) + 2;
+              i < parseInt(result.data.data.pairs[0].token1.decimals);
               i++
             ) {
               reserve1[1] += "0";
@@ -259,7 +259,7 @@ router.post('/checkUsdc/SUSHISWAP',async(req,res) => {
         ) {
           for (
             var i = reserve1[1].length;
-            i < parseInt(result.data.data.pairs[0].token1.decimals) + 2;
+            i < parseInt(result.data.data.pairs[0].token1.decimals);
             i++
           ) {
             reserve1[1] += "0";
@@ -326,7 +326,7 @@ router.post('/checkUsdc/SUSHISWAP',async(req,res) => {
             ) {
               for (
                 var i = reserve1[1].length;
-                i < parseInt(result.data.data.pairs[0].token1.decimals) + 2;
+                i < parseInt(result.data.data.pairs[0].token1.decimals);
                 i++
               ) {
                 reserve1[1] += "0";
@@ -411,7 +411,7 @@ router.get('/UNISWAP/pair',async(req,res) => {
         ) {
           
   
-          for (var i = reserve1[1].length; i < parseInt(result.data.data.pair.token1.decimals)+2; i++) {
+          for (var i = reserve1[1].length; i < parseInt(result.data.data.pair.token1.decimals); i++) {
             reserve1[1] += "0";
           }
           result.data.data.pair.reserve1 = reserve1[0]+reserve1[1];
