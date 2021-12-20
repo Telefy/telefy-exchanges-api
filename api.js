@@ -59,7 +59,6 @@ router.post("/checkUsdc/UNISWAP", async (req, res) => {
 
   let token0 = req.body.token0;
   let token1 = req.body.token1;
-  try {
     let result = await axios.post(
       "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2",
       {
@@ -123,7 +122,6 @@ router.post("/checkUsdc/UNISWAP", async (req, res) => {
       response.shuffle = 0;
       response.status = "SUCCESS";
     } else {
-      try {
         let result = await axios.post(
           "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2",
           {
@@ -195,17 +193,9 @@ router.post("/checkUsdc/UNISWAP", async (req, res) => {
           response.shuffle = 0;
           response.status = "SUCCESS";
         }
-      } catch (err) {
-        console.error(err, "=---uniswap error");
-        response.status = "FAILURE";
-        response.data = error;
-      }
+      
     }
-  } catch (error) {
-    console.error(error, "=---uniswap error");
-    response.status = "FAILURE";
-    response.data = error;
-  }
+ 
   res.status(statusCode).json(response);
 });
 
@@ -215,8 +205,7 @@ router.post('/checkUsdc/SUSHISWAP',async(req,res) => {
   let statusCode = 200
 
   let token0 =  req.body.token0;
-  let token1 =  req.body.token1;
-  try {    
+  let token1 =  req.body.token1;   
       let result = await axios.post(
         "https://api.thegraph.com/subgraphs/name/sushiswap/exchange",
         {
@@ -284,7 +273,6 @@ router.post('/checkUsdc/SUSHISWAP',async(req,res) => {
         response.shuffle = 0;
         response.status = "SUCCESS";
       } else {
-        try {
           let result = await axios.post(
             "https://api.thegraph.com/subgraphs/name/sushiswap/exchange",
             {
@@ -356,17 +344,9 @@ router.post('/checkUsdc/SUSHISWAP',async(req,res) => {
             response.shuffle = 0;
             response.status = "SUCCESS";
           }
-        } catch (error) {
-          console.error(error, "=---sushiswap error");
-          response.status = "FAILURE";
-          response.data = error;
-        }
+        
       }
-    } catch (error) {
-      console.error(error,"=---sushiswap error");
-      response.status = "FAILURE"
-      response.data = error;
-    } 
+    
     res.status(statusCode).json(response)
 });
 
@@ -379,7 +359,6 @@ router.get('/UNISWAP/pair',async(req,res) => {
     let statusCode = 200
 
     let pairAddr =  req.query.pairAddress;
-    try {    
         let result = await axios.post(
           "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2",
           {
@@ -443,11 +422,7 @@ router.get('/UNISWAP/pair',async(req,res) => {
           response.data = result.data.data;
           response.status = "SUCCESS";
         
-      } catch (error) {
-        console.error(error,"=---uniswap error");
-        response.status = "FAILURE"
-        response.data = error;
-      } 
+     
       res.status(statusCode).json(response)
 });
 
@@ -455,8 +430,7 @@ router.get('/SUSHISWAP/pair',async(req,res) => {
     let response = {}
     response.data = []
     let statusCode = 200
-    let pariAddr =  req.query.pairAddress;
-    try {    
+    let pariAddr =  req.query.pairAddress; 
         let result = await axios.post(
           "https://api.thegraph.com/subgraphs/name/sushiswap/exchange",
           {
@@ -494,11 +468,7 @@ router.get('/SUSHISWAP/pair',async(req,res) => {
 
         response.data = result.data.data
         response.status = "SUCCESS";
-      } catch (error) {
-        console.error(error,"=---sushi error");
-        response.status = "FAILURE"
-        response.data = error;
-      }
+      
       res.status(statusCode).json(response)
 });
 
@@ -551,7 +521,6 @@ const getReserves = async (pairId) => {
 
 
 const checkUniswapPair = async (wheres) => {
-  try{
       let result = await axios.post(
           "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2",
           {
@@ -612,14 +581,11 @@ const checkUniswapPair = async (wheres) => {
           }
 
         }
-  } catch(err) {
-    return [];
-      console.log(err)
-  }            
+              
           
   }
 const checkSushiswapPair = async (wheres) => {
-  try{
+ 
       let result = await axios.post(
           "https://api.thegraph.com/subgraphs/name/sushiswap/exchange",
           {
@@ -680,10 +646,7 @@ const checkSushiswapPair = async (wheres) => {
           }
 
         }
-  } catch(err) {
-      return [];
-      console.log(err)
-  }            
+              
           
   }
 
@@ -724,7 +687,6 @@ const getUniswapPairs = async () => {
   let take = 1000;
   let data = []
   do {
-    try {
       let result = await axios.post(
         "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2",
         {
@@ -755,9 +717,7 @@ const getUniswapPairs = async () => {
         data.push(...result.data.data.pairs)
       }
       skip= skip+1000;
-    } catch (err) {
-      console.log(err);
-    }
+    
   }
   while (data.length >= skip);
   // while (1 > skip);
@@ -768,7 +728,6 @@ const getSushiswapPairs = async () => {
   let take = 1000;
   let data = []
   do {
-    try {
       let result = await axios.post(
         "https://api.thegraph.com/subgraphs/name/sushiswap/exchange",
         {
@@ -799,9 +758,7 @@ const getSushiswapPairs = async () => {
         data.push(...result.data.data.pairs)
       }
       skip= skip+1000;
-    } catch (err) {
-      console.log(err);
-    }
+    
   }
   while (data.length >= skip);
   // while (1 > skip);
@@ -812,7 +769,6 @@ const getBalancerPairs = async () => {
   let take = 1000;
   let data = []
   do {
-    try {
       let result = await axios.post(
         "https://api.thegraph.com/subgraphs/name/balancer-labs/balancer",
         {
@@ -833,9 +789,7 @@ const getBalancerPairs = async () => {
         data.push(...result.data.data.pools)
       }
       skip= skip+1000;
-    } catch (err) {
-      console.log(err);
-    }
+   
   }
   while (data.length >= skip);
   // while (1 > skip);
