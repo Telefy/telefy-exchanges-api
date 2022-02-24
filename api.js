@@ -93,8 +93,7 @@ router.post("/checkUsdc/UNISWAP", async (req, res) => {
       if (
         parseInt(reserve0[1].length) !==
         parseInt(result.data.data.pairs[0].token0.decimals)
-      ) {
-        
+      ) {  
 
         for (var i = reserve0[1].length; i < parseInt(result.data.data.pairs[0].token0.decimals); i++) {
           reserve0[1] += "0";
